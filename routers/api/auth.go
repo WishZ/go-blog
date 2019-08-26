@@ -3,7 +3,7 @@ package api
 import (
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
-	"go-blog/models"
+	"go-blog/dao"
 	"go-blog/pkg/e"
 	"go-blog/pkg/logging"
 	"go-blog/pkg/util"
@@ -26,7 +26,7 @@ func GetAuth(c *gin.Context) {
 	data := make(map[string]interface{})
 	code := e.INVALID_PARAMS
 	if ok {
-		isExist := models.CheckAuth(username, password)
+		isExist := dao.CheckAuth(username, password)
 		if isExist {
 			token, err := util.GenerateToken(username, password)
 			if err != nil {

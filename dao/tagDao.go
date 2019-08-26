@@ -1,4 +1,4 @@
-package models
+package dao
 
 import (
 	"go-blog/entity"

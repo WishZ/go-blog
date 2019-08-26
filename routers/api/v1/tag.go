@@ -2,9 +2,9 @@ package v1
 
 import (
 	"github.com/Unknwon/com"
-	"github.com/gin-gonic/gin"
 	"github.com/astaxie/beego/validation"
-	"go-blog/models"
+	"github.com/gin-gonic/gin"
+	"go-blog/dao"
 	"go-blog/pkg/e"
 	"go-blog/pkg/setting"
 	"go-blog/pkg/util"
@@ -30,8 +30,8 @@ func GetTags(c *gin.Context) {
 
 	code := e.SUCCESS
 
-	data["lists"] = models.GetTags(util.GetPage(c), setting.PageSize, maps)
-	data["total"] = models.GetTagTotal(maps)
+	data["lists"] = dao.GetTags(util.GetPage(c), setting.PageSize, maps)
+	data["total"] = dao.GetTagTotal(maps)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code" : code,
@@ -55,9 +55,9 @@ func AddTag(c *gin.Context) {
 
 	code := e.INVALID_PARAMS
 	if ! valid.HasErrors() {
-		if ! models.ExistTagByName(name) {
+		if ! dao.ExistTagByName(name) {
 			code = e.SUCCESS
-			models.AddTag(name, state, createdBy)
+			dao.AddTag(name, state, createdBy)
 		} else {
 			code = e.ERROR_EXIST_TAG
 		}
@@ -92,7 +92,7 @@ func EditTag(c *gin.Context) {
 	code := e.INVALID_PARAMS
 	if ! valid.HasErrors() {
 		code = e.SUCCESS
-		if models.ExistTagByID(id) {
+		if dao.ExistTagByID(id) {
 			data := make(map[string]interface{})
 			data["modified_by"] = modifiedBy
 			if name != "" {
@@ -102,7 +102,7 @@ func EditTag(c *gin.Context) {
 				data["state"] = state
 			}
 
-			models.EditTag(id, data)
+			dao.EditTag(id, data)
 		} else {
 			code = e.ERROR_NOT_EXIST_TAG
 		}
@@ -125,8 +125,8 @@ func DeleteTag(c *gin.Context) {
 	code := e.INVALID_PARAMS
 	if ! valid.HasErrors() {
 		code = e.SUCCESS
-		if models.ExistTagByID(id) {
-			models.DeleteTag(id)
+		if dao.ExistTagByID(id) {
+			dao.DeleteTag(id)
 		} else {
 			code = e.ERROR_NOT_EXIST_TAG
 		}

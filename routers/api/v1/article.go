@@ -4,7 +4,7 @@ import (
 	"github.com/Unknwon/com"
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
-	"go-blog/models"
+	"go-blog/dao"
 	"go-blog/pkg/e"
 	"go-blog/pkg/logging"
 	"go-blog/pkg/setting"
@@ -22,8 +22,8 @@ func GetArticle(c *gin.Context) {
 	code := e.INVALID_PARAMS
 	var data interface {}
 	if ! valid.HasErrors() {
-		if models.ExistArticleByID(id) {
-			data = models.GetArticle(id)
+		if dao.ExistArticleByID(id) {
+			data = dao.GetArticle(id)
 			code = e.SUCCESS
 		} else {
 			code = e.ERROR_NOT_EXIST_ARTICLE
@@ -67,8 +67,8 @@ func GetArticles(c *gin.Context) {
 	if ! valid.HasErrors() {
 		code = e.SUCCESS
 
-		data["lists"] = models.GetArticles(util.GetPage(c), setting.PageSize, maps)
-		data["total"] = models.GetArticleTotal(maps)
+		data["lists"] = dao.GetArticles(util.GetPage(c), setting.PageSize, maps)
+		data["total"] = dao.GetArticleTotal(maps)
 
 	} else {
 		for _, err := range valid.Errors {
@@ -102,7 +102,7 @@ func AddArticle(c *gin.Context) {
 
 	code := e.INVALID_PARAMS
 	if ! valid.HasErrors() {
-		if models.ExistTagByID(tagId) {
+		if dao.ExistTagByID(tagId) {
 			data := make(map[string]interface {})
 			data["tag_id"] = tagId
 			data["title"] = title
@@ -111,7 +111,7 @@ func AddArticle(c *gin.Context) {
 			data["created_by"] = createdBy
 			data["state"] = state
 
-			models.AddArticle(data)
+			dao.AddArticle(data)
 			code = e.SUCCESS
 		} else {
 			code = e.ERROR_NOT_EXIST_TAG
@@ -155,8 +155,8 @@ func EditArticle(c *gin.Context) {
 
 	code := e.INVALID_PARAMS
 	if ! valid.HasErrors() {
-		if models.ExistArticleByID(id) {
-			if models.ExistTagByID(tagId) {
+		if dao.ExistArticleByID(id) {
+			if dao.ExistTagByID(tagId) {
 				data := make(map[string]interface {})
 				if tagId > 0 {
 					data["tag_id"] = tagId
@@ -173,7 +173,7 @@ func EditArticle(c *gin.Context) {
 
 				data["modified_by"] = modifiedBy
 
-				models.EditArticle(id, data)
+				dao.EditArticle(id, data)
 				code = e.SUCCESS
 			} else {
 				code = e.ERROR_NOT_EXIST_TAG
@@ -203,8 +203,8 @@ func DeleteArticle(c *gin.Context) {
 
 	code := e.INVALID_PARAMS
 	if ! valid.HasErrors() {
-		if models.ExistArticleByID(id) {
-			models.DeleteArticle(id)
+		if dao.ExistArticleByID(id) {
+			dao.DeleteArticle(id)
 			code = e.SUCCESS
 		} else {
 			code = e.ERROR_NOT_EXIST_ARTICLE

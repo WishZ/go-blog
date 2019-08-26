@@ -11,12 +11,12 @@ func main() {
 
 	c := cron.New()
 	_ = c.AddFunc("* * * * * *", func() {
-		log.Println("Run models.CleanAllTag...")
-		//models.CleanAllTag()
+		log.Println("Run dao.CleanAllTag...")
+		//dao.CleanAllTag()
 	})
 	_ = c.AddFunc("* * * * * *", func() {
-		log.Println("Run models.CleanAllArticle...")
-		//models.CleanAllArticle()
+		log.Println("Run dao.CleanAllArticle...")
+		//dao.CleanAllArticle()
 	})
 
 	c.Start()
