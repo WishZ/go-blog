@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"go-blog/dto/inputDto"
 	"go-blog/entity"
 )
 
@@ -29,14 +30,14 @@ func EditArticle(id int, data interface{}) bool {
 	return true
 }
 
-func AddArticle(data map[string]interface{}) bool {
+func AddArticle(articleCreateDto inputDto.ArticleInputDto) bool {
 	db.Create(&entity.Article{
-		TagID:   data["tag_id"].(int),
-		Title:   data["title"].(string),
-		Desc:    data["desc"].(string),
-		Content: data["content"].(string),
-		Creator: data["created_by"].(string),
-		State:   data["state"].(int),
+		TagID:   articleCreateDto.TagId,
+		Title:   articleCreateDto.Title,
+		Desc:    articleCreateDto.Desc,
+		Content: articleCreateDto.Content,
+		Creator: articleCreateDto.CreatedBy,
+		State:   articleCreateDto.State,
 	})
 
 	return true

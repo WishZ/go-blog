@@ -5,6 +5,7 @@ import (
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"go-blog/dao"
+	"go-blog/dto/inputDto"
 	"go-blog/pkg/e"
 	"go-blog/pkg/logging"
 	"go-blog/pkg/setting"
@@ -20,7 +21,7 @@ func GetArticle(c *gin.Context) {
 	valid.Min(id, 1, "id").Message("ID必须大于0")
 
 	code := e.INVALID_PARAMS
-	var data interface {}
+	var data interface{}
 	if ! valid.HasErrors() {
 		if dao.ExistArticleByID(id) {
 			data = dao.GetArticle(id)
@@ -35,9 +36,9 @@ func GetArticle(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"code" : code,
-		"msg" : e.GetMsg(code),
-		"data" : data,
+		"code": code,
+		"msg":  e.GetMsg(code),
+		"data": data,
 	})
 }
 
@@ -77,41 +78,31 @@ func GetArticles(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"code" : code,
-		"msg" : e.GetMsg(code),
-		"data" : data,
+		"code": code,
+		"msg":  e.GetMsg(code),
+		"data": data,
 	})
 }
 
 //新增文章
 func AddArticle(c *gin.Context) {
-	tagId := com.StrTo(c.Query("tag_id")).MustInt()
-	title := c.Query("title")
-	desc := c.Query("desc")
-	content := c.Query("content")
-	createdBy := c.Query("created_by")
-	state := com.StrTo(c.DefaultQuery("state", "0")).MustInt()
-
+	var articleCreateDto inputDto.ArticleInputDto
+	err := c.BindJSON(&articleCreateDto)
+	if err != nil {
+		c.JSON(200, gin.H{"code": 400, "msg": "Post Data Err"})
+		return
+	}
 	valid := validation.Validation{}
-	valid.Min(tagId, 1, "tag_id").Message("标签ID必须大于0")
-	valid.Required(title, "title").Message("标题不能为空")
-	valid.Required(desc, "desc").Message("简述不能为空")
-	valid.Required(content, "content").Message("内容不能为空")
-	valid.Required(createdBy, "created_by").Message("创建人不能为空")
-	valid.Range(state, 0, 1, "state").Message("状态只允许0或1")
-
+	valid.Min(articleCreateDto.TagId, 1, "tag_id").Message("标签ID必须大于0")
+	valid.Required(articleCreateDto.Title, "title").Message("标题不能为空")
+	valid.Required(articleCreateDto.Desc, "desc").Message("简述不能为空")
+	valid.Required(articleCreateDto.Content, "content").Message("内容不能为空")
+	valid.Required(articleCreateDto.CreatedBy, "created_by").Message("创建人不能为空")
+	valid.Range(articleCreateDto.State, 0, 1, "state").Message("状态只允许0或1")
 	code := e.INVALID_PARAMS
 	if ! valid.HasErrors() {
-		if dao.ExistTagByID(tagId) {
-			data := make(map[string]interface {})
-			data["tag_id"] = tagId
-			data["title"] = title
-			data["desc"] = desc
-			data["content"] = content
-			data["created_by"] = createdBy
-			data["state"] = state
-
-			dao.AddArticle(data)
+		if dao.ExistTagByID(articleCreateDto.TagId) {
+			dao.AddArticle(articleCreateDto)
 			code = e.SUCCESS
 		} else {
 			code = e.ERROR_NOT_EXIST_TAG
@@ -123,9 +114,9 @@ func AddArticle(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"code" : code,
-		"msg" : e.GetMsg(code),
-		"data" : make(map[string]interface{}),
+		"code": code,
+		"msg":  e.GetMsg(code),
+		"data": make(map[string]interface{}),
 	})
 }
 
@@ -157,7 +148,7 @@ func EditArticle(c *gin.Context) {
 	if ! valid.HasErrors() {
 		if dao.ExistArticleByID(id) {
 			if dao.ExistTagByID(tagId) {
-				data := make(map[string]interface {})
+				data := make(map[string]interface{})
 				if tagId > 0 {
 					data["tag_id"] = tagId
 				}
@@ -188,9 +179,9 @@ func EditArticle(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"code" : code,
-		"msg" : e.GetMsg(code),
-		"data" : make(map[string]string),
+		"code": code,
+		"msg":  e.GetMsg(code),
+		"data": make(map[string]string),
 	})
 }
 
@@ -216,8 +207,8 @@ func DeleteArticle(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"code" : code,
-		"msg" : e.GetMsg(code),
-		"data" : make(map[string]string),
+		"code": code,
+		"msg":  e.GetMsg(code),
+		"data": make(map[string]string),
 	})
 }
