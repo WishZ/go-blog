@@ -86,7 +86,7 @@ func GetArticles(c *gin.Context) {
 
 //新增文章
 func AddArticle(c *gin.Context) {
-	var articleCreateDto inputDto.ArticleInputDto
+	var articleCreateDto inputDto.ArticleCreateInputDto
 	err := c.BindJSON(&articleCreateDto)
 	if err != nil {
 		c.JSON(200, gin.H{"code": 400, "msg": "Post Data Err"})
@@ -124,47 +124,42 @@ func AddArticle(c *gin.Context) {
 func EditArticle(c *gin.Context) {
 	valid := validation.Validation{}
 
-	id := com.StrTo(c.Param("id")).MustInt()
-	tagId := com.StrTo(c.Query("tag_id")).MustInt()
-	title := c.Query("title")
-	desc := c.Query("desc")
-	content := c.Query("content")
-	modifiedBy := c.Query("modified_by")
-
-	var state int = -1
-	if arg := c.Query("state"); arg != "" {
-		state = com.StrTo(arg).MustInt()
-		valid.Range(state, 0, 1, "state").Message("状态只允许0或1")
+	var articleEditDto inputDto.ArticleEditInputDto
+	err := c.BindJSON(&articleEditDto)
+	if err != nil {
+		c.JSON(200, gin.H{"code": 400, "msg": "Post Data Err"})
+		return
 	}
 
-	valid.Min(id, 1, "id").Message("ID必须大于0")
-	valid.MaxSize(title, 100, "title").Message("标题最长为100字符")
-	valid.MaxSize(desc, 255, "desc").Message("简述最长为255字符")
-	valid.MaxSize(content, 65535, "content").Message("内容最长为65535字符")
-	valid.Required(modifiedBy, "modified_by").Message("修改人不能为空")
-	valid.MaxSize(modifiedBy, 100, "modified_by").Message("修改人最长为100字符")
+	valid.Range(articleEditDto.State, 0, 1, "state").Message("状态只允许0或1")
+	valid.Min(articleEditDto.Id, 1, "id").Message("ID必须大于0")
+	valid.MaxSize(articleEditDto.Title, 100, "title").Message("标题最长为100字符")
+	valid.MaxSize(articleEditDto.Desc, 255, "desc").Message("简述最长为255字符")
+	valid.MaxSize(articleEditDto.Content, 65535, "content").Message("内容最长为65535字符")
+	valid.Required(articleEditDto.Modifier, "modified_by").Message("修改人不能为空")
+	valid.MaxSize(articleEditDto.Modifier, 100, "modified_by").Message("修改人最长为100字符")
 
 	code := e.INVALID_PARAMS
 	if ! valid.HasErrors() {
-		if dao.ExistArticleByID(id) {
-			if dao.ExistTagByID(tagId) {
+		if dao.ExistArticleByID(articleEditDto.Id) {
+			if dao.ExistTagByID(articleEditDto.TagId) {
 				data := make(map[string]interface{})
-				if tagId > 0 {
-					data["tag_id"] = tagId
+				if articleEditDto.TagId > 0 {
+					data["tag_id"] = articleEditDto.TagId
 				}
-				if title != "" {
-					data["title"] = title
+				if articleEditDto.Title != "" {
+					data["title"] = articleEditDto.Title
 				}
-				if desc != "" {
-					data["desc"] = desc
+				if articleEditDto.Desc != "" {
+					data["desc"] = articleEditDto.Desc
 				}
-				if content != "" {
-					data["content"] = content
+				if articleEditDto.Content != "" {
+					data["content"] = articleEditDto.Content
 				}
 
-				data["modified_by"] = modifiedBy
+				data["modifier"] = articleEditDto.Modifier
 
-				dao.EditArticle(id, data)
+				dao.EditArticle(articleEditDto.Id, data)
 				code = e.SUCCESS
 			} else {
 				code = e.ERROR_NOT_EXIST_TAG

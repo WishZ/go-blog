@@ -30,7 +30,7 @@ func EditArticle(id int, data interface{}) bool {
 	return true
 }
 
-func AddArticle(articleCreateDto inputDto.ArticleInputDto) bool {
+func AddArticle(articleCreateDto inputDto.ArticleCreateInputDto) bool {
 	db.Create(&entity.Article{
 		TagID:   articleCreateDto.TagId,
 		Title:   articleCreateDto.Title,
