@@ -28,7 +28,7 @@ func GetTags(c *gin.Context) {
 		maps["state"] = state
 	}
 
-	code := e.SUCCESS
+	code := e.Success
 
 	data["lists"] = dao.GetTags(util.GetPage(c), setting.PageSize, maps)
 	data["total"] = dao.GetTagTotal(maps)
@@ -53,13 +53,13 @@ func AddTag(c *gin.Context) {
 	valid.MaxSize(createdBy, 100, "created_by").Message("创建人最长为100字符")
 	valid.Range(state, 0, 1, "state").Message("状态只允许0或1")
 
-	code := e.INVALID_PARAMS
+	code := e.InvalidParams
 	if ! valid.HasErrors() {
 		if ! dao.ExistTagByName(name) {
-			code = e.SUCCESS
+			code = e.Success
 			dao.AddTag(name, state, createdBy)
 		} else {
-			code = e.ERROR_EXIST_TAG
+			code = e.ErrorExistTag
 		}
 	}
 
@@ -89,9 +89,9 @@ func EditTag(c *gin.Context) {
 	valid.MaxSize(modifiedBy, 100, "modified_by").Message("修改人最长为100字符")
 	valid.MaxSize(name, 100, "name").Message("名称最长为100字符")
 
-	code := e.INVALID_PARAMS
+	code := e.InvalidParams
 	if ! valid.HasErrors() {
-		code = e.SUCCESS
+		code = e.Success
 		if dao.ExistTagByID(id) {
 			data := make(map[string]interface{})
 			data["modified_by"] = modifiedBy
@@ -104,7 +104,7 @@ func EditTag(c *gin.Context) {
 
 			dao.EditTag(id, data)
 		} else {
-			code = e.ERROR_NOT_EXIST_TAG
+			code = e.ErrorNotExistTag
 		}
 	}
 
@@ -122,13 +122,13 @@ func DeleteTag(c *gin.Context) {
 	valid := validation.Validation{}
 	valid.Min(id, 1, "id").Message("ID必须大于0")
 
-	code := e.INVALID_PARAMS
+	code := e.InvalidParams
 	if ! valid.HasErrors() {
-		code = e.SUCCESS
+		code = e.Success
 		if dao.ExistTagByID(id) {
 			dao.DeleteTag(id)
 		} else {
-			code = e.ERROR_NOT_EXIST_TAG
+			code = e.ErrorNotExistTag
 		}
 	}
 

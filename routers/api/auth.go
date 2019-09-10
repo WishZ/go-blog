@@ -24,21 +24,21 @@ func GetAuth(c *gin.Context) {
 	ok, _ := valid.Valid(&a)
 
 	data := make(map[string]interface{})
-	code := e.INVALID_PARAMS
+	code := e.InvalidParams
 	if ok {
 		isExist := dao.CheckAuth(username, password)
 		if isExist {
 			token, err := util.GenerateToken(username, password)
 			if err != nil {
-				code = e.ERROR_AUTH_TOKEN
+				code = e.ErrorAuthToken
 			} else {
 				data["token"] = token
 
-				code = e.SUCCESS
+				code = e.Success
 			}
 
 		} else {
-			code = e.ERROR_AUTH
+			code = e.ErrorNotUsername
 		}
 	} else {
 		for _, err := range valid.Errors {
