@@ -1,0 +1,29 @@
+version: '2'
+
+services:
+  mysql:
+    container_name: mysql
+    image: daocloud.io/library/mysql:5.6
+    restart: always
+    expose:
+      - "3306"
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./manifests/docker_data/var_lib_mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - TZ=Asia/Shanghai
+  redis:
+    container_name: redis
+    image: daocloud.io/library/redis
+    restart: always
+    expose:
+      - "6379"
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./manifests/docker_data/var_lib_redis:/data
+    command: redis-server --appendonly yes
+    environment:
+      - TZ=Asia/Shanghai
