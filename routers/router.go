@@ -1,11 +1,12 @@
 package routers
 
 import (
-	"github.com/gin-gonic/gin"
 	"go-blog/middleware/jwt"
 	"go-blog/pkg/setting"
 	"go-blog/routers/api"
 	v1 "go-blog/routers/api/v1"
+
+	"github.com/gin-gonic/gin"
 )
 
 func InitRouter() *gin.Engine {
@@ -15,7 +16,7 @@ func InitRouter() *gin.Engine {
 	gin.SetMode(setting.RunMode)
 
 	r.GET("/auth", api.GetAuth)
-
+	r.GET("/ws", api.WebsocketPage)
 	apiv1 := r.Group("/api/v1")
 	apiv1.Use(jwt.JWT())
 	{
