@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
-	"go-blog/pkg/setting"
-	"go-blog/routers"
+	"re_station/pkg/setting"
+	"re_station/routers"
 	"log"
 	"net/http"
 	"os"

@@ -1,7 +1,7 @@
 package redis
 
 import (
-	"go-blog/pkg/setting"
+	"re_station/pkg/setting"
 	"log"
 
 	"github.com/go-redis/redis"

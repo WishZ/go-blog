@@ -4,11 +4,11 @@ import (
 	"github.com/Unknwon/com"
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
-	"go-blog/models"
-	"go-blog/pkg/e"
-	"go-blog/pkg/logging"
-	"go-blog/pkg/setting"
-	"go-blog/pkg/util"
+	"re_station/models"
+	"re_station/pkg/e"
+	"re_station/pkg/logging"
+	"re_station/pkg/setting"
+	"re_station/pkg/util"
 	"net/http"
 )
 

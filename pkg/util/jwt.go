@@ -2,7 +2,7 @@ package util
 
 import (
 	"github.com/dgrijalva/jwt-go"
-	"go-blog/pkg/setting"
+	"re_station/pkg/setting"
 	"time"
 )
 

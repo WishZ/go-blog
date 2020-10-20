@@ -1,10 +1,10 @@
 package routers
 
 import (
-	"go-blog/middleware/jwt"
-	"go-blog/pkg/setting"
-	"go-blog/routers/api"
-	v1 "go-blog/routers/api/v1"
+	"re_station/middleware/jwt"
+	"re_station/pkg/setting"
+	"re_station/routers/api"
+	v1 "re_station/routers/api/v1"
 
 	"github.com/gin-gonic/gin"
 )

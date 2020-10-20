@@ -1,7 +1,7 @@
 package api
 
 import (
-	ws "go-blog/demo"
+	ws "re_station/demo"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
