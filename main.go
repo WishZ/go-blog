@@ -3,12 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
-	"re_station/pkg/setting"
-	"re_station/routers"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
+	"re_station/pkg/setting"
+	"re_station/routers"
 	"time"
 )
 
